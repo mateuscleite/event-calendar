@@ -1,44 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../class/user';
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
 
 @Injectable()
 export class UsersService {
 
+    /*
     users: User[] = [
         { email: "admin@admin.com", name: "admin", password: "admin", events:["festa1", "reunião1"]},
         { email: "mateus@gmail.com", name: "Mateus", password: "123", events:["entrevista", "aula"]}
     ]
+    */
 
-    getAll(){
-        return this.users;
+    constructor(@InjectModel('User') private readonly userModel: Model<User>){}
+
+    async getAll(){
+        return await this.userModel.find().exec()
     }
 
-    getByEmail(email: string){
-        const user = this.users.find(value => value.email === email)
-        return user;
+    async getById(id: string){
+        return await this.userModel.findById(id).exec()
     }
 
-    create(user: User){
-        this.users.push(user)
-
-        return user;
+    async create(user: User){
+        const newUser = new this.userModel(user)
+        return await newUser.save();
+    }
+    
+    async update(id: string, user: User){
+        await this.userModel.updateOne({_id: id}, user).exec()
+        return this.getById(id);
     }
 
-    update(user: User){
-        const existingUser = this.getByEmail(user.email)
-        if(existingUser){
-            existingUser.email = user.email
-            existingUser.events = user.events
-            existingUser.name = user.name
-            existingUser.password = user.password
-        }
-
-        return existingUser;
-    }
-
-    delete(email: string){
-        const index = this.users.findIndex(value => value.email === email)
-        this.users.splice(index)
+    async delete(id: string){
+        return await this.userModel.deleteOne({_id: id}).exec();
     }
 
 }

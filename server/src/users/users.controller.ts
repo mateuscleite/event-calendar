@@ -14,9 +14,9 @@ export class UsersController {
         return this.usersService.getAll();
     }
 
-    @Get(':email')
-    async getByEmail(@Param('email') email: string): Promise<User>{
-        return this.usersService.getByEmail(email);
+    @Get(':id')
+    async getById(@Param('id') id: string): Promise<User>{
+        return this.usersService.getById(id);
     }
 
     @Post()
@@ -24,15 +24,14 @@ export class UsersController {
         return this.usersService.create(user);
     }
 
-    @Put(':email')
-    async update(@Param('email') email: string, @Body() user: User) : Promise<User>{
-        user.email = email
-        return this.usersService.update(user);
+    @Put(':id')
+    async update(@Param('id') id: string, @Body() user: User) : Promise<User>{
+        return this.usersService.update(id, user);
     }
 
-    @Delete(':email')
-    async delete(@Param('email') email: string){
-        this.usersService.delete(email)
+    @Delete(':id')
+    async delete(@Param('id') id: string){
+        this.usersService.delete(id)
     }
 
 }
