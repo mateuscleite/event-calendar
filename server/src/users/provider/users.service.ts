@@ -6,13 +6,6 @@ import { Model } from 'mongoose'
 @Injectable()
 export class UsersService {
 
-    /*
-    users: User[] = [
-        { email: "admin@admin.com", name: "admin", password: "admin", events:["festa1", "reunião1"]},
-        { email: "mateus@gmail.com", name: "Mateus", password: "123", events:["entrevista", "aula"]}
-    ]
-    */
-
     constructor(@InjectModel('User') private readonly userModel: Model<User>){}
 
     async getAll(){
