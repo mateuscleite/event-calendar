@@ -9,7 +9,7 @@ export class EventsController {
     }
 
     @Get()
-    async getAll() : Promise<Event[]>{
+    async getAll(): Promise<Event[]>{
         return this.eventsService.getAll();
     }
 
@@ -18,9 +18,9 @@ export class EventsController {
         return this.eventsService.getById(id);
     }
 
-    @Get(':ownerId')
-    async getAllByOwner(@Param('ownerId') ownerId: string): Promise<Event[]>{
-        return this.eventsService.getAllByOwner(ownerId)
+    @Get('owner/:id')
+    async getAllByOwner(@Param('id') id: string): Promise<Event[]>{
+        return this.eventsService.getAllByOwner(id)
     }
 
     @Post()
@@ -29,7 +29,7 @@ export class EventsController {
     }
 
     @Put(':id')
-    async update(@Param('id') id: string, @Body() event: Event) : Promise<Event>{
+    async update(@Param('id') id: string, @Body() event: Event): Promise<Event>{
         return this.eventsService.update(id, event);
     }
 
