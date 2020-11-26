@@ -13,6 +13,15 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(user: User){
-    
+    return new Promise(resolve => {
+      window.localStorage.setItem('token', 'auth')
+      resolve(true)
+    })
+  }
+
+  createAccount(account: any){
+    return new Promise(resolve => {
+      resolve(true)
+    })
   }
 }
