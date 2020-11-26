@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-create-account',
@@ -7,9 +8,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreateAccountComponent implements OnInit {
 
-  constructor() { }
+  newUser = {
+    name: '',
+    email: '',
+    password: ''
+  }
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+  }
+
+  async createAccount(){
+    try{
+      const result = await this.authService.createAccount(this.newUser)
+      console.log(result)
+    }
+    catch(error){
+      console.log(error)
+    }
   }
 
 }

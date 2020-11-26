@@ -11,6 +11,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { NewEventComponent } from './components/new-event/new-event.component';
 import { EditEventComponent } from './components/edit-event/edit-event.component';
 import { AuthenticationComponent } from './components/authentication/authentication.component';
+import { httpInterceptorProviders } from './interceptors'
 
 @NgModule({
   declarations: [
@@ -28,7 +29,9 @@ import { AuthenticationComponent } from './components/authentication/authenticat
     FormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    httpInterceptorProviders
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
