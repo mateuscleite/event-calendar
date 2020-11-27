@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { EventsService } from 'src/app/services/events.service';
 import { CalendarOptions } from '@fullcalendar/angular';
 import ptBr from '@fullcalendar/core/locales/pt-br'
+import jwt_decode from 'jwt-decode'
+import { Subscription } from 'rxjs';
+import { EventsService } from 'src/app/services/events.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-calendar',
@@ -11,23 +13,36 @@ import ptBr from '@fullcalendar/core/locales/pt-br'
 })
 export class CalendarComponent implements OnInit {
 
-  events: any[] = new Array()
-  subscription: Subscription
+  events: any[] = new Array();
+  calendarEvents: any[] = [];
+  subscription: Subscription;
+  welcomeMessage: string;
+  user: Object;
+  option: string;
 
   calendarOptions: CalendarOptions = {
     timeZone: 'local',
     locale: ptBr,
     themeSystem: 'bootstrap',
-    initialView: 'timeGridWeek',
-    events: [
-      { title: 'event 1', start: '2020-11-26T00:00:00', end: '2020-11-26T03:00:00' },
-      { title: 'event 2', date: '2020-11-27' }
-    ]
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'dayGridMonth,timeGridWeek,timeGridDay list',
+      center: 'title',
+      right: 'prev,next'
+    },
+    events: this.calendarEvents
   };
 
-  constructor(private eventsService: EventsService) { }
+  constructor(private authService: AuthService, private eventsService: EventsService) { }
 
   ngOnInit(): void {
+    //get the user information provided by the user token
+    const token = this.authService.getAuthToken()
+    const tokenDecoded = jwt_decode(token)
+    this.user = tokenDecoded
+
+    this.calendarEvents = [];
+    this.setWelcomeMessage()
     this.loadEvents()
   }
 
@@ -35,8 +50,40 @@ export class CalendarComponent implements OnInit {
     this.subscription = this.eventsService.getUserEvents()
       .subscribe(response => {
         this.events = response
-        console.log(this.events)
+        for(let event of this.events){
+          this.calendarEvents.push({
+            title: event['description'],
+            start: event['start'],
+            end: event['end'],
+            id: event['_id']
+          })
+        }
+        //update the calendar view with the data retrieved from the server
+        this.calendarOptions.events = this.calendarEvents
       })
+  }
+
+  getCurrentTime(){
+    const today = new Date()
+    return today.getHours();
+  }
+
+  //sets a different welcome message according to the current time
+  setWelcomeMessage(){
+    const currentTime = this.getCurrentTime()
+    if(currentTime >= 5 && currentTime <= 11){
+      this.welcomeMessage = `Bom dia, ${this.user['name']}!`
+    }
+    else if(currentTime >= 12 && currentTime <= 18){
+      this.welcomeMessage = `Boa tarde, ${this.user['name']}!`
+    }
+    else if(currentTime >= 19 || currentTime <= 4){
+      this.welcomeMessage = `Boa tarde, ${this.user['name']}!`
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

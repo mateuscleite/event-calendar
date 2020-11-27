@@ -6,6 +6,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,7 +22,8 @@ import { httpInterceptorProviders } from './interceptors'
 FullCalendarModule.registerPlugins([ 
   dayGridPlugin,
   interactionPlugin,
-  timeGridPlugin
+  timeGridPlugin,
+  listPlugin
 ]);
 
 @NgModule({

@@ -1,1 +1,9 @@
-<full-calendar [options]="calendarOptions"></full-calendar>
+<div class="container border border-primary rounded mt-3">
+    <h3 class="text-center">{{ welcomeMessage }}</h3>
+
+    <full-calendar [options]="calendarOptions" class="m-2"></full-calendar>
+
+    <div class="border-top border-primary">
+        <app-new-event></app-new-event>
+    </div>
+</div>
