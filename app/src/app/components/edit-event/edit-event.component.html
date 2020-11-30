@@ -1,1 +1,38 @@
-<p>edit-event works!</p>
+<div id="update-event">
+
+    <button type="button" class="close mr-3 mt-2" aria-label="Close" [routerLink]="['/']">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h3 class="text-center mt-4">Editar evento</h3>
+    
+    <form (ngSubmit)="updateEvent()">
+        <div class="container col-lg-6 text-center">
+            <div class="form-group mt-2">
+                <label>Descrição do evento</label>
+                <input class="form-control" type="text" name="description" [(ngModel)]="event.description" required />
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Data de início</label>
+                    <input class="form-control" type="date" name="startDate" [(ngModel)]="event.startDate" required />
+                </div>
+                <div class="col">
+                    <label>Hora de início</label>
+                    <input class="form-control" type="time" name="startTime" [(ngModel)]="event.startTime" required />
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <label>Data de término</label>
+                    <input class="form-control" type="date" name="endDate" [(ngModel)]="event.endDate" required />
+                </div>
+                <div class="col">
+                    <label>Hora de término</label>
+                    <input class="form-control" type="time" name="endTime" [(ngModel)]="event.endTime" required />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success btn-block m-3 col-lg-4 mx-auto">Atualizar</button>
+            <button type="button" class="btn btn-danger btn-block m-3 col-lg-4 mx-auto">Cancelar evento</button>
+        </div>
+    </form>
+</div>

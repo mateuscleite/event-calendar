@@ -4,4 +4,12 @@ export class Event {
     description: string;
     start: string;
     end: string;
+
+    constructor(){
+        this.owner = ''
+        this.guests = []
+        this.description = ''
+        this.start = ''
+        this.end = ''
+    }
 }

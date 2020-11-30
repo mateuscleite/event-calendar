@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { EventsService } from 'src/app/services/events.service';
+import { Event } from '../../classes/event'
 import jwt_decode from 'jwt-decode';
 
 @Component({
@@ -18,18 +21,16 @@ export class NewEventComponent implements OnInit {
     endTime: ''
   }
 
-  dbEvent = {
-    owner: '',
-    guests: [],
-    description: '',
-    start: '',
-    end: ''
-  }
+  dbEvent = new Event()
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService, 
+    private eventsService: EventsService
+  ) { }
 
   ngOnInit(): void {
     this.setOwner()
+    document.getElementById('new-event').scrollIntoView();
   }
 
   setOwner(){
@@ -38,8 +39,43 @@ export class NewEventComponent implements OnInit {
     this.dbEvent.owner = tokenDecoded['id']
   }
 
+  convertToDbEvent(){
+    this.dbEvent.description = this.event.description
+    this.dbEvent.start = this.event.startDate + this.formatTime(this.event.startTime)
+    this.dbEvent.end = this.event.endDate + this.formatTime(this.event.endTime)
+  }
+
+  //add a T to the start of the time string to adapt to the necessary date format
   formatTime(time: string){
     return `T${time}`;
+  }
+
+  //if the end date and time are after the start date and time returns true; otherwise, returns false
+  isTimeFrameOk(startFullDate: Date, endFullDate): boolean {
+    if(endFullDate.getFullYear() > startFullDate.getFullYear()){
+      return true;
+    }
+    else if(endFullDate.getFullYear() === startFullDate.getFullYear()){
+      if(endFullDate.getMonth() > startFullDate.getMonth()){
+        return true;
+      }
+      else if(endFullDate.getMonth() === startFullDate.getMonth()){
+        if(endFullDate.getDay() > startFullDate.getDay()){
+          return true;
+        }
+        else if(endFullDate.getDay() === startFullDate.getDay()){
+          if(endFullDate.getHours() > startFullDate.getHours()){
+            return true;
+          }
+          else if(endFullDate.getHours() === startFullDate.getHours()){
+            if(endFullDate.getMinutes() > startFullDate.getMinutes()){
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
   }
 
   createEvent(){
@@ -51,9 +87,23 @@ export class NewEventComponent implements OnInit {
         this.event.startDate.split(" ").join("") === '' ||
         this.event.startTime.split(" ").join("") === ''
     ){
-      alert("Preecha todos os campos")
+      alert("Preencha todos os campos")
+      return;
     }
-    console.log(this.formatTime(this.event.endTime))
+
+    this.convertToDbEvent()
+    let startFullDate = new Date(this.dbEvent.start)
+    let endFullDate = new Date(this.dbEvent.end)
+
+    if(!this.isTimeFrameOk(startFullDate, endFullDate)){
+      alert("A data ou horário de término devem ser maiores que os de início")
+      return;
+    }
+    else{
+      console.log(this.dbEvent)
+      const result = this.eventsService.newEvent(this.dbEvent)
+      window.location.reload();
+    }
   }
 
 }

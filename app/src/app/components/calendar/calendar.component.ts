@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CalendarOptions } from '@fullcalendar/angular';
 import ptBr from '@fullcalendar/core/locales/pt-br'
 import jwt_decode from 'jwt-decode'
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
 
   events: any[] = new Array();
   calendarEvents: any[] = [];
@@ -31,7 +31,12 @@ export class CalendarComponent implements OnInit {
       center: 'title',
       right: 'prev,next'
     },
-    events: this.calendarEvents
+    events: this.calendarEvents,
+    eventClick: (info) => { 
+      this.router.navigate([`/edit/${info.event.id}`]).then(() => {
+        window.location.reload();
+      });
+    }
   };
 
   constructor(
@@ -86,14 +91,6 @@ export class CalendarComponent implements OnInit {
     }
     else if(currentTime >= 19 || currentTime <= 4){
       this.welcomeMessage = `Boa noite, ${this.user['name']}!`
-    }
-  }
-
-  switchOption(option: string){
-    switch(option){
-      case ('new'):
-        this.router.navigate(['/new'])
-        break;
     }
   }
 
