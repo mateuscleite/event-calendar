@@ -5,6 +5,7 @@ import jwt_decode from 'jwt-decode'
 import { Subscription } from 'rxjs';
 import { EventsService } from 'src/app/services/events.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar',
@@ -26,7 +27,7 @@ export class CalendarComponent implements OnInit {
     themeSystem: 'bootstrap',
     initialView: 'dayGridMonth',
     headerToolbar: {
-      left: 'dayGridMonth,timeGridWeek,timeGridDay list',
+      left: 'dayGridMonth,timeGridWeek,timeGridDay listMonth',
       center: 'title',
       right: 'prev,next'
     },
@@ -34,7 +35,9 @@ export class CalendarComponent implements OnInit {
   };
 
   constructor(
-    private authService: AuthService, private eventsService: EventsService,) { 
+    private authService: AuthService, 
+    private eventsService: EventsService,
+    private router: Router) { 
     }
 
   ngOnInit(): void {
@@ -87,7 +90,11 @@ export class CalendarComponent implements OnInit {
   }
 
   switchOption(option: string){
-    this.option = option
+    switch(option){
+      case ('new'):
+        this.router.navigate(['/new'])
+        break;
+    }
   }
 
   logout(){

@@ -32,10 +32,6 @@ export class NewEventComponent implements OnInit {
     this.setOwner()
   }
 
-  closeForm(){
-    
-  }
-
   setOwner(){
     const token = this.authService.getAuthToken()
     const tokenDecoded = jwt_decode(token)
@@ -45,8 +41,18 @@ export class NewEventComponent implements OnInit {
   formatTime(time: string){
     return `T${time}`;
   }
+
   createEvent(){
     console.log(this.event)
+    //checks if a field has only space characters
+    if( this.event.description.split(" ").join("") === '' || 
+        this.event.endDate.split(" ").join("") === '' ||
+        this.event.endTime.split(" ").join("") === '' ||
+        this.event.startDate.split(" ").join("") === '' ||
+        this.event.startTime.split(" ").join("") === ''
+    ){
+      alert("Preecha todos os campos")
+    }
     console.log(this.formatTime(this.event.endTime))
   }
 

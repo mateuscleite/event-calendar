@@ -21,12 +21,13 @@ export class LoginComponent implements OnInit {
 
   async login(){
     try{
+      this.user.email.trim()
+      this.user.password.trim()
       const result = await this.authService.login(this.user)
-      console.log(`You logged in ${result} `)
-
       this.router.navigate([''])
     }
     catch(error){
+      alert("E-mail ou senha inválidos. Tente novamente.")
       console.log(error)
     }
   }

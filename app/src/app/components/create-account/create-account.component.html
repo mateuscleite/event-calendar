@@ -1,20 +1,27 @@
-<h3 class="text-center">Criar conta</h3>
-
-<form (ngSubmit)="createAccount()">
-    <div class="container col-lg-6 text-center">
-    <div class="form-group">
-      <label>Nome</label>
-      <input class="form-control" type="text" name="name" [(ngModel)]="newUser.name" required />
-    </div>
-      <div class="form-group">
-        <label>Endereço de e-mail</label>
-        <input class="form-control" type="email" name="email" [(ngModel)]="newUser.email" required />
-      </div>
-      <div class="form-group">
-        <label>Senha</label>
-        <input class="form-control" type="password" name="password" [(ngModel)]="newUser.password" required />
-      </div>
-      <button type="submit" class="btn btn-primary btn-block">Finalizar</button>
+<div class="container bg-light border rounded p-3">
+  <h3 class="text-center">Criar conta</h3>
   
-    </div>
-</form>
+  <form (ngSubmit)="createAccount()">
+      <div class="container text-center">
+      <div class="form-group">
+        <label>Nome</label>
+        <input class="form-control" type="text" name="name" placeholder="Seu nome" [(ngModel)]="newUser.name" required />
+      </div>
+        <div class="form-group">
+          <label>Endereço de e-mail</label>
+          <input class="form-control" type="email" name="email" placeholder="exemplo@provedor.com"
+            [(ngModel)]="newUser.email" required email #email="ngModel"/>
+          <div *ngIf="!email.valid && email.touched" class="alert alert-danger" role="alert">
+            Insira um e-mail válido
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input class="form-control" type="password" name="password" placeholder="Sua senha" [(ngModel)]="newUser.password" required />
+        </div>
+        <button type="submit" class="btn btn-success btn-block col-md-6 mx-auto">Finalizar</button>
+        <button type="button" class="btn btn-danger btn-block col-md-6 mx-auto" [routerLink]="['']">Cancelar</button>
+    
+      </div>
+  </form>
+</div>
