@@ -25,7 +25,8 @@ export class NewEventComponent implements OnInit {
 
   constructor(
     private authService: AuthService, 
-    private eventsService: EventsService
+    private eventsService: EventsService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -79,7 +80,6 @@ export class NewEventComponent implements OnInit {
   }
 
   createEvent(){
-    console.log(this.event)
     //checks if a field has only space characters
     if( this.event.description.split(" ").join("") === '' || 
         this.event.endDate.split(" ").join("") === '' ||
@@ -100,9 +100,10 @@ export class NewEventComponent implements OnInit {
       return;
     }
     else{
-      console.log(this.dbEvent)
-      const result = this.eventsService.newEvent(this.dbEvent)
-      window.location.reload();
+      const result = this.eventsService.newEvent(this.dbEvent).subscribe(result => {})
+      this.router.navigate(['/']).then(() => {
+        window.location.reload()
+      })
     }
   }
 

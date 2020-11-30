@@ -1,7 +1,9 @@
 <div id="background-primary" class="container-fluid bg-primary pt-3 pb-3">
-    <div id="background-secondary" class="container border rounded bg-light pr-0 pl-0">
+    <div id="background-secondary" class="container border text-center rounded bg-light pr-0 pl-0">
 
         <h2 class="text-center mb-4 mt-3">{{ welcomeMessage }}</h2>
+
+        <p>Abaixo você encontra os seus eventos já cadastrados. Para alterar ou cancelar eventos, clique no qual você deseja alterar.</p>
 
         <div class="container">
             <full-calendar [options]="calendarOptions" class="m-2"></full-calendar>

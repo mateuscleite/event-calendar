@@ -27,11 +27,11 @@ export class EventsService {
   }
 
   updateEvent(event: Event, id: string){
-    console.log("Is updating")
-    console.log(event)
-    console.log(id)
     return this.http.put<Event>(`${environment.API}events/${id}`, event)
   }
 
+  deleteEvent(id: string){
+    return this.http.delete<any>(`${environment.API}events/${id}`)
+  }
 
 }

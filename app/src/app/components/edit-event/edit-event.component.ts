@@ -105,7 +105,6 @@ export class EditEventComponent implements OnInit, OnDestroy {
   }
 
   updateEvent(){
-    console.log(this.event)
     //checks if a field has only space characters
     if( this.event.description.split(" ").join("") === '' || 
         this.event.endDate.split(" ").join("") === '' ||
@@ -126,11 +125,29 @@ export class EditEventComponent implements OnInit, OnDestroy {
       return;
     }
     else{
-      console.log("mandou")
-      console.log(this.dbEvent)
-      const result = this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(response => {})
-      //window.location.reload();
+      this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(response => {})
+      this.router.navigate(['/']).then(() => {
+        window.location.reload();
+      });
     }
+  }
+
+  confirmDeletion(): boolean {
+    const confirmation = confirm(`Tem certeza que quer deletar o evento "${this.event.description}"?\nEssa ação não poderá ser desfeita.`);
+    if(confirmation === true) {
+       return true;
+    } 
+    else return false;
+  }
+
+  deleteEvent(){
+    if(this.confirmDeletion()){
+      this.eventsService.deleteEvent(this.eventId).subscribe(response => {})
+      this.router.navigate(['/']).then(() => {
+        window.location.reload();
+      });
+    }
+    else return;
   }
 
   ngOnDestroy(): void {
