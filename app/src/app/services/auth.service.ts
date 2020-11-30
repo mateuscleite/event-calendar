@@ -59,8 +59,8 @@ export class AuthService {
       return false;
     }
 
-    //if the expiration date of the token is greater than the current date, the token has expired; otherwise, it is valid
-    return !(date.valueOf() > new Date().valueOf());
+    //if the expiration date of the token is smaller than the current date, the token has expired; otherwise, it is valid
+    return date.valueOf() <= new Date().valueOf();
   }
 
   isUserLoggedIn(){
@@ -76,6 +76,10 @@ export class AuthService {
     else{
       return false;
     }
+  }
+
+  logout(){
+    window.localStorage.clear()
   }
 
 }

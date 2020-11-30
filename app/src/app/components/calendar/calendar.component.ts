@@ -33,13 +33,17 @@ export class CalendarComponent implements OnInit {
     events: this.calendarEvents
   };
 
-  constructor(private authService: AuthService, private eventsService: EventsService) { }
+  constructor(
+    private authService: AuthService, private eventsService: EventsService,) { 
+    }
 
   ngOnInit(): void {
     //get the user information provided by the user token
     const token = this.authService.getAuthToken()
     const tokenDecoded = jwt_decode(token)
     this.user = tokenDecoded
+
+    this.option = ''
 
     this.calendarEvents = [];
     this.setWelcomeMessage()
@@ -78,8 +82,18 @@ export class CalendarComponent implements OnInit {
       this.welcomeMessage = `Boa tarde, ${this.user['name']}!`
     }
     else if(currentTime >= 19 || currentTime <= 4){
-      this.welcomeMessage = `Boa tarde, ${this.user['name']}!`
+      this.welcomeMessage = `Boa noite, ${this.user['name']}!`
     }
+  }
+
+  switchOption(option: string){
+    this.option = option
+  }
+
+  logout(){
+    this.authService.logout()
+    window.location.reload();
+
   }
 
   ngOnDestroy(): void {

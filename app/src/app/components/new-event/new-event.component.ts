@@ -32,14 +32,22 @@ export class NewEventComponent implements OnInit {
     this.setOwner()
   }
 
+  closeForm(){
+    
+  }
+
   setOwner(){
     const token = this.authService.getAuthToken()
     const tokenDecoded = jwt_decode(token)
     this.dbEvent.owner = tokenDecoded['id']
   }
 
+  formatTime(time: string){
+    return `T${time}`;
+  }
   createEvent(){
     console.log(this.event)
+    console.log(this.formatTime(this.event.endTime))
   }
 
 }
