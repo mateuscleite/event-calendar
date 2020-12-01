@@ -106,6 +106,16 @@ export class NewEventComponent implements OnInit {
     }
     
     let addedEvent = false
+
+    //check if the new event is the first for this user
+    if(this.eventsService.currentEvents.length === 0){
+      const result = this.eventsService.newEvent(this.dbEvent).subscribe(() => {
+        this.router.navigate(['/']).then(() => {
+          window.location.reload()
+          return;
+        }) 
+      })
+    }
     //check for event collision and show a confirmation box if the events collide/overlap
     for(let event of this.eventsService.currentEvents){
       let compareStart = new Date(event['start'])
