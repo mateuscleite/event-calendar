@@ -51,36 +51,41 @@ export class NewEventComponent implements OnInit {
     return `T${time}`;
   }
 
-  //if the end date and time are after the start date and time returns true; otherwise, returns false
-  isTimeFrameOk(startFullDate: Date, endFullDate): boolean {
-    if(endFullDate.getFullYear() > startFullDate.getFullYear()){
+  //if the end date is after the start date returns true; otherwise, returns false
+  isTimeFrameOk(startFullDate: Date, endFullDate: Date): boolean {
+    if(startFullDate.getTime() < endFullDate.getTime()){
+      return true
+    }
+    else return false;
+  }
+
+  //compares start and end dates of two events to determine if they collide
+  //if they do, returns true; otherwise returns false
+  eventsCollide(startCompareDate: Date, endCompareDate: Date, startEventDate: Date, endEventDate: Date): boolean {
+    const startCompareTime = startCompareDate.getTime()
+    const endCompareTime = endCompareDate.getTime()
+    const startEventTime = startEventDate.getTime()
+    const endEventTime = endEventDate.getTime()
+
+    if(//trivial comparison, if the events start a the same time, they collide
+       (startCompareTime === startEventTime) ||
+       //another trivial comparison, if the events end at the same time, they collide
+       (endCompareTime === endEventTime) ||
+       //event starts during the event it is being compared to, so they collide
+       (startCompareTime < startEventTime && startEventTime < endCompareTime) ||
+       //event finishes during the event it is being compared to, so they collide
+       (startCompareTime < endEventTime && endEventTime < endCompareTime) ||
+       //event starts and finishes during the event it is being compared to, so the collide
+       (startCompareTime < startEventTime && endEventTime < endCompareTime) ||
+       //the event it is being compared to starts and finishes during the new event, so they collide
+       (startEventTime < startCompareTime && endEventTime > endCompareTime)){
       return true;
     }
-    else if(endFullDate.getFullYear() === startFullDate.getFullYear()){
-      if(endFullDate.getMonth() > startFullDate.getMonth()){
-        return true;
-      }
-      else if(endFullDate.getMonth() === startFullDate.getMonth()){
-        if(endFullDate.getDay() > startFullDate.getDay()){
-          return true;
-        }
-        else if(endFullDate.getDay() === startFullDate.getDay()){
-          if(endFullDate.getHours() > startFullDate.getHours()){
-            return true;
-          }
-          else if(endFullDate.getHours() === startFullDate.getHours()){
-            if(endFullDate.getMinutes() > startFullDate.getMinutes()){
-              return true;
-            }
-          }
-        }
-      }
-    }
-    return false;
+    else return false;
   }
 
   createEvent(){
-    //checks if a field has only space characters
+    //checks if a field has only space characters or is empty
     if( this.event.description.split(" ").join("") === '' || 
         this.event.endDate.split(" ").join("") === '' ||
         this.event.endTime.split(" ").join("") === '' ||
@@ -99,12 +104,28 @@ export class NewEventComponent implements OnInit {
       alert("A data ou horário de término devem ser maiores que os de início")
       return;
     }
-    else{
-      const result = this.eventsService.newEvent(this.dbEvent).subscribe(result => {})
-      this.router.navigate(['/']).then(() => {
-        window.location.reload()
-      })
-    }
+    
+    //check for event collision and show a confirmation box if the events collid/overlap
+    for(let event of this.eventsService.currentEvents){
+      let compareStart = new Date(event['start'])
+      let compareEnd = new Date(event['end'])
+      if(this.eventsCollide(compareStart, compareEnd, startFullDate, endFullDate)){
+        const confirmation = confirm(`O evento "${event['description']}" está marcado para o mesmo horário\nVocê deseja marcar o evento "${this.dbEvent.description}" mesmo assim?`);
+        if(confirmation === true) {
+          const result = this.eventsService.newEvent(this.dbEvent).subscribe(result => {})
+          this.router.navigate(['/']).then(() => {
+            window.location.reload()
+          })      
+        } 
+        else return false;
+      }
+    } 
+
+    //if there were no event collisions, the new event can be safely added to the database
+    const result = this.eventsService.newEvent(this.dbEvent).subscribe(result => {})
+    this.router.navigate(['/']).then(() => {
+      window.location.reload()
+    })  
   }
 
 }

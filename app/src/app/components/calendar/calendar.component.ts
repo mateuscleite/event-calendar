@@ -29,14 +29,17 @@ export class CalendarComponent implements OnInit, OnDestroy {
     headerToolbar: {
       left: 'dayGridMonth,timeGridWeek,timeGridDay listMonth',
       center: 'title',
-      right: 'prev,next'
+      right: 'today prev,next'
     },
     events: this.calendarEvents,
     eventClick: (info) => { 
       this.router.navigate([`/edit/${info.event.id}`]).then(() => {
         window.location.reload();
       });
-    }
+    },
+    dayMaxEventRows: true,
+    moreLinkClick: 'popover',
+    nowIndicator: true 
   };
 
   constructor(
@@ -72,6 +75,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
         }
         //update the calendar view with the data retrieved from the server
         this.calendarOptions.events = this.calendarEvents
+        //set the currentEvents in the eventsService so other components can have access to the events for validation
+        this.eventsService.setCurrentEvents(this.events)
       })
   }
 

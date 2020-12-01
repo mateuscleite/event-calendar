@@ -10,7 +10,13 @@ import jwt_decode from 'jwt-decode';
 })
 export class EventsService {
 
+  currentEvents: any[] = new Array();
+
   constructor(private http: HttpClient, private authService: AuthService) { }
+
+  setCurrentEvents(events: any[]){
+    this.currentEvents = events
+  }
 
   getUserEvents(){
     const token = this.authService.getAuthToken()
