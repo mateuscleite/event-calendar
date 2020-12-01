@@ -130,27 +130,31 @@ export class EditEventComponent implements OnInit, OnDestroy {
       return;
     }
    
-    //check for event collision and show a confirmation box if the events collid/overlap
+    //check for event collision and show a confirmation box if the events collide/overlap
     for(let event of this.eventsService.currentEvents){
-      let compareStart = new Date(event['start'])
-      let compareEnd = new Date(event['end'])
-      if(this.eventsCollide(compareStart, compareEnd, startFullDate, endFullDate)){
-        const confirmation = confirm(`O evento "${event['description']}" está marcado para o mesmo horário\nVocê deseja marcar o evento "${this.dbEvent.description}" mesmo assim?`);
-        if(confirmation === true) {
-          this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(response => {})
-          this.router.navigate(['/']).then(() => {
-            window.location.reload();
-          });    
-        } 
-        else return false;
+      if(this.eventId !== event['_id']){
+        let compareStart = new Date(event['start'])
+        let compareEnd = new Date(event['end'])
+        if(this.eventsCollide(compareStart, compareEnd, startFullDate, endFullDate)){
+          const confirmation = confirm(`O evento "${event['description']}" está marcado para o mesmo horário\nVocê deseja marcar o evento "${this.dbEvent.description}" mesmo assim?`);
+          if(confirmation === true) {
+            this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
+              this.router.navigate(['/']).then(() => {
+                window.location.reload();
+              });
+            })  
+          } 
+          else return false;
+        }
       }
     } 
 
     //if there were no event collisions, the new event can be safely updated in the database
-    this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(response => {})
-    this.router.navigate(['/']).then(() => {
-      window.location.reload();
-    });
+    this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
+      this.router.navigate(['/']).then(() => {
+        window.location.reload();
+      });
+    })
   }
 
   confirmDeletion(): boolean {
@@ -163,10 +167,11 @@ export class EditEventComponent implements OnInit, OnDestroy {
 
   deleteEvent(){
     if(this.confirmDeletion()){
-      this.eventsService.deleteEvent(this.eventId).subscribe(response => {})
-      this.router.navigate(['/']).then(() => {
-        window.location.reload();
-      });
+      this.eventsService.deleteEvent(this.eventId).subscribe(() => {
+        this.router.navigate(['/']).then(() => {
+          window.location.reload();
+        });
+      })
     }
     else return;
   }

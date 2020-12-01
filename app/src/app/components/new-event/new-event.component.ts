@@ -112,20 +112,22 @@ export class NewEventComponent implements OnInit {
       if(this.eventsCollide(compareStart, compareEnd, startFullDate, endFullDate)){
         const confirmation = confirm(`O evento "${event['description']}" está marcado para o mesmo horário\nVocê deseja marcar o evento "${this.dbEvent.description}" mesmo assim?`);
         if(confirmation === true) {
-          const result = this.eventsService.newEvent(this.dbEvent).subscribe(result => {})
-          this.router.navigate(['/']).then(() => {
-            window.location.reload()
-          })      
+          const result = this.eventsService.newEvent(this.dbEvent).subscribe(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload()
+            }) 
+          })     
         } 
         else return false;
       }
     } 
 
     //if there were no event collisions, the new event can be safely added to the database
-    const result = this.eventsService.newEvent(this.dbEvent).subscribe(result => {})
-    this.router.navigate(['/']).then(() => {
-      window.location.reload()
-    })  
+    const result = this.eventsService.newEvent(this.dbEvent).subscribe(() => {
+      this.router.navigate(['/']).then(() => {
+        window.location.reload()
+      }) 
+    }) 
   }
 
 }
