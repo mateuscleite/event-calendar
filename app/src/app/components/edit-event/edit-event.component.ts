@@ -132,11 +132,12 @@ export class EditEventComponent implements OnInit, OnDestroy {
    
     //check for event collision and show a confirmation box if the events collide/overlap
     for(let event of this.eventsService.currentEvents){
-      if(this.eventId !== event['_id']){
-        let compareStart = new Date(event['start'])
-        let compareEnd = new Date(event['end'])
-        if(this.eventsCollide(compareStart, compareEnd, startFullDate, endFullDate)){
-          const confirmation = confirm(`O evento "${event['description']}" está marcado para o mesmo horário\nVocê deseja marcar o evento "${this.dbEvent.description}" mesmo assim?`);
+      let compareStart = new Date(event['start'])
+      let compareEnd = new Date(event['end'])
+      if(this.eventsCollide(compareStart, compareEnd, startFullDate, endFullDate)){
+        //only show confirmation message if we're comparing to another event
+        if(this.eventId !== event['_id']){
+        const confirmation = confirm(`O evento "${event['description']}" está marcado para o mesmo horário\nVocê deseja marcar o evento "${this.dbEvent.description}" mesmo assim?`);
           if(confirmation === true) {
             this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
               this.router.navigate(['/']).then(() => {
@@ -147,15 +148,15 @@ export class EditEventComponent implements OnInit, OnDestroy {
           } 
           else return;
         }
-        else if(event === this.eventsService.currentEvents[this.eventsService.currentEvents.length - 1]){
-          //if there were no event collisions, the new event can be safely updated in the database
-          this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
-            this.router.navigate(['/']).then(() => {
-              window.location.reload();
-              return;
-            });
-          })
-        }
+      }
+      //if there were no event collisions, the event can be safely updated in the database
+      if(event === this.eventsService.currentEvents[this.eventsService.currentEvents.length - 1]){
+        this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+            return;
+          });
+        })
       }
     } 
   }
