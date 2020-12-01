@@ -141,20 +141,23 @@ export class EditEventComponent implements OnInit, OnDestroy {
             this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
               this.router.navigate(['/']).then(() => {
                 window.location.reload();
+                return;
               });
             })  
           } 
-          else return false;
+          else return;
+        }
+        else if(event === this.eventsService.currentEvents[this.eventsService.currentEvents.length - 1]){
+          //if there were no event collisions, the new event can be safely updated in the database
+          this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+              return;
+            });
+          })
         }
       }
     } 
-
-    //if there were no event collisions, the new event can be safely updated in the database
-    this.eventsService.updateEvent(this.dbEvent, this.eventId).subscribe(() => {
-      this.router.navigate(['/']).then(() => {
-        window.location.reload();
-      });
-    })
   }
 
   confirmDeletion(): boolean {
@@ -170,6 +173,7 @@ export class EditEventComponent implements OnInit, OnDestroy {
       this.eventsService.deleteEvent(this.eventId).subscribe(() => {
         this.router.navigate(['/']).then(() => {
           window.location.reload();
+          return;
         });
       })
     }

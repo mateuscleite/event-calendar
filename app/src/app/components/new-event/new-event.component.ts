@@ -105,29 +105,35 @@ export class NewEventComponent implements OnInit {
       return;
     }
     
-    //check for event collision and show a confirmation box if the events collid/overlap
+    let addedEvent = false
+    //check for event collision and show a confirmation box if the events collide/overlap
     for(let event of this.eventsService.currentEvents){
       let compareStart = new Date(event['start'])
       let compareEnd = new Date(event['end'])
       if(this.eventsCollide(compareStart, compareEnd, startFullDate, endFullDate)){
         const confirmation = confirm(`O evento "${event['description']}" está marcado para o mesmo horário\nVocê deseja marcar o evento "${this.dbEvent.description}" mesmo assim?`);
         if(confirmation === true) {
+          addedEvent = true
           const result = this.eventsService.newEvent(this.dbEvent).subscribe(() => {
             this.router.navigate(['/']).then(() => {
               window.location.reload()
             }) 
-          })     
+          })
+          break;    
         } 
-        else return false;
+        else return;
+      }
+      //if there were no event collisions and we checked every event, the new event can be safely added to the database
+      else if(event === this.eventsService.currentEvents[this.eventsService.currentEvents.length - 1]){
+        console.log("entrou aqui")
+        const result = this.eventsService.newEvent(this.dbEvent).subscribe(() => {
+          this.router.navigate(['/']).then(() => {
+            window.location.reload()
+            return;
+          }) 
+        }) 
       }
     } 
-
-    //if there were no event collisions, the new event can be safely added to the database
-    const result = this.eventsService.newEvent(this.dbEvent).subscribe(() => {
-      this.router.navigate(['/']).then(() => {
-        window.location.reload()
-      }) 
-    }) 
   }
 
 }
